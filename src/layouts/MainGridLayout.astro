@@ -44,7 +44,7 @@ const mainPanelTop = siteConfig.banner.enable
 <Layout title={title} banner={banner} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle}>
 
 
- <script is:inline>
+    <script is:inline>
         // 强制默认浅色模式，优先于系统设置
         if (!localStorage.getItem('theme')) {
             document.documentElement.classList.add('light');
@@ -57,7 +57,7 @@ const mainPanelTop = siteConfig.banner.enable
             document.documentElement.classList.toggle('light', savedTheme === 'light');
             document.documentElement.classList.toggle('dark', savedTheme === 'dark');
         }
-</script>
+    </script>
 
 
 <!-- Navbar -->
