@@ -1,9 +1,9 @@
 ---
-title: Expressive Code Example
+title: 富有表现力的代码示例
 published: 2024-04-10
 description: How code blocks look in Markdown using Expressive Code.
-tags: [Markdown, Blogging, Demo]
-category: Examples
+tags: [Markdown,  Demo]
+category: 博客指南
 draft: false
 ---
 
