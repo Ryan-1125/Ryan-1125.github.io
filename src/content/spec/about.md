@@ -1,10 +1,10 @@
 # 关于
-这是[纸船](https://github.com/Ryan-1125)的博客仓库：
+这是[纸船](https://music.163.com/#/song?id=1442312981)的博客仓库：
 
 ::github{repo="Ryan-1125/Ryan-1125.github.io"}
 
 
-## 旅行家说：
+## [旅行家说：](https://music.163.com/#/song?id=1845994595)
 
 **“我总是不假思索地上路，因为出发的感觉太好了，世界突然充满了可能性。”**
 
