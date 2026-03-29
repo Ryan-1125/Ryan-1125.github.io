@@ -1,59 +1,108 @@
 ---
-import { getEntry } from "astro:content";
+// ============================================
+// 友链页面：src/pages/friends.astro
+// 功能：展示友链前言 + 本站信息 + 友链卡片列表
+// ============================================
+
+// 1. 从 Astro 内容集合中读取数据工具
+import { getEntry, render } from "astro:content";
+// 2. 导入博客自带的 Markdown 渲染组件
+import Markdown from "@components/misc/Markdown.astro";
+// 3. 导入国际化相关配置（多语言标题）
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
+// 4. 导入页面布局
 import MainGridLayout from "../layouts/MainGridLayout.astro";
 
+// ------------------------------
+// 读取友链数据（从 content/spec/friends.md）
+// ------------------------------
 const friendEntry = await getEntry("spec", "friends");
 
+// 如果找不到配置文件，抛出错误
 if (!friendEntry) {
-	throw new Error("找不到友链配置文件");
+	throw new Error("Friends content not found");
 }
 
+// 解析 MD 里的前言内容（<Content /> 会渲染 MD 文本）
+const { Content } = await render(friendEntry);
+
+// 解构 MD 里的友链数据：myInfo = 本站信息，friends = 友链列表
 const { friends = [], myInfo } = friendEntry.data;
 ---
 
+<!-- 页面结构：使用博客统一布局 -->
 <MainGridLayout title={i18n(I18nKey.friends)}>
-  <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
-    <div class="card-base z-10 px-9 py-6 relative w-full">
-
-      <!-- 本站信息 -->
-      {myInfo && (
-        <div class="bg-[var(--btn-plain-bg-hover)] p-5 rounded-xl border-l-4 border-[var(--primary)] mb-10">
-          <p class="font-bold mb-2 text-90 italic flex items-center">
-            <span class="w-2 h-2 rounded-full bg-[var(--primary)] mr-2"></span>
-            本站信息
-          </p>
-          <ul class="space-y-1 text-75 text-sm font-mono">
-            <li>名称：{myInfo.name}</li>
-            <li>介绍：{myInfo.introduction}</li>
-            <li>链接：<code class="bg-black/5 dark:bg-white/10 px-1 rounded">{myInfo.link}</code></li>
-            <li>头像：<code class="bg-black/5 dark:bg-white/10 px-1 rounded text-xs">{myInfo.avatar}</code></li>
-          </ul>
-        </div>
-      )}
-
-      <div class="h-[1px] w-full bg-black/5 dark:bg-white/10 my-8"></div>
-
-      <!-- 友链卡片 -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {friends.map((friend) => (
-          <a href={friend.link} target="_blank" rel="noopener noreferrer"
-            class="flex items-center p-4 rounded-xl hover:bg-[var(--btn-plain-bg-hover)] transition-all group active:scale-95 border border-transparent hover:border-[var(--primary)]/20 shadow-sm">
-            <img src={friend.avatar} alt={friend.name}
-              class="w-16 h-16 rounded-full border-2 border-[var(--primary)] shadow-sm mr-4 shrink-0 object-cover" />
-            <div class="overflow-hidden">
-              <div class="font-bold text-lg text-90 transition-all group-hover:text-[var(--primary)] truncate">
-                {friend.name}
-              </div>
-              <div class="text-sm text-50 line-clamp-1 italic">
-                {friend.introduction}
-              </div>
+    <!-- 外层容器：圆角 + 溢出隐藏 -->
+    <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
+        
+        <!-- 内容主体容器：卡片基础样式 -->
+        <div class="card-base z-10 px-9 py-6 relative w-full">
+            
+            <!-- ======================================
+                 区域 1：友链前言（从 friends.md 读取）
+                 支持 # 标题 / 段落 等 MD 语法
+                 ====================================== -->
+            <div class="mb-6 text-90">
+                <Markdown>
+                    <Content />
+                </Markdown>
             </div>
-          </a>
-        ))}
-      </div>
 
+            <!-- ======================================
+                 区域 2：本站信息卡片
+                 ====================================== -->
+            {myInfo && (
+                <div class="bg-[var(--btn-plain-bg-hover)] p-5 rounded-xl border-l-4 border-[var(--primary)] mb-10">
+                    
+                    <p class="font-bold mb-2 text-90 flex items-center">
+                        <span class="w-2 h-2 rounded-full bg-[var(--primary)] mr-2"></span>
+                        本站信息
+                    </p>
+
+                    <ul class="space-y-1 text-75 text-sm">
+                        <li>名称：{myInfo.name}</li>
+                        <li>签名：{myInfo.introduction}</li>
+                        <li>网址：<code class="bg-black/5 dark:bg-white/10 px-1 rounded">{myInfo.link}</code></li>
+                        <li>头像：<code class="bg-black/5 dark:bg-white/10 px-1 rounded text-xs">{myInfo.avatar}</code></li>
+                    </ul>
+                </div>
+            )}
+
+            
+            <div class="h-[1px] w-full bg-black/5 dark:bg-white/10 my-8"></div>
+
+            <!-- ======================================
+                 区域 3：友链卡片列表（循环渲染）
+                 响应式：手机 1 列 / 平板以上 2 列
+                 交互：hover 高亮 + 头像旋转 + 点击缩放
+                 ====================================== -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {friends.map((friend) => (
+                    <a 
+                        href={friend.link} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        class="flex items-center p-4 rounded-xl hover:bg-[var(--btn-plain-bg-hover)] transition-all group active:scale-95 border border-transparent hover:border-[var(--primary)]/20 shadow-sm"
+                    >
+                        <img 
+                            src={friend.avatar} 
+                            alt={friend.name} 
+                            class="w-16 h-16 rounded-full border-2 border-[var(--primary)] shadow-sm mr-4 shrink-0 transition-transform group-hover:rotate-12 object-cover" 
+                        />
+
+                        <div class="overflow-hidden">
+                            <div class="font-bold text-lg text-90 transition-all group-hover:text-[var(--primary)] truncate">
+                                {friend.name}
+                            </div>
+                            <div class="text-sm text-50 line-clamp-1 italic">
+                                {friend.introduction}
+                            </div>
+                        </div>
+                    </a>
+                ))}
+            </div>
+
+        </div>
     </div>
-  </div>
 </MainGridLayout>

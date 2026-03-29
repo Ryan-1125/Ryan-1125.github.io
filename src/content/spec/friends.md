@@ -19,9 +19,12 @@ friends:
 
   - name: 友人A
     introduction: 热爱技术与生活
-    link: https://yyy.com
-    avatar: https://yyy.com/avatar.png
+    link: https://aaa.com
+    avatar: https://aaa.com/avatar.png
 ---
 
-# 友链说明
-欢迎交换友链！
+# 友链
+山水万程，幸会于此。  
+欢迎志同道合的朋友交换友链，一起记录生活，分享热爱。  
+如需添加友链，请在留下您博客的基本信息，  
+格式为：| 名称 | 签名 | 网址 | 头像 |
